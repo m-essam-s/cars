@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAonF97JqWm9NDs9BLOC0SUQJdgkKuFfJk',
-    appId: '1:287016054500:android:0e1355cdbed5131a24c6f1',
-    messagingSenderId: '287016054500',
-    projectId: 'cars-app-project',
-    storageBucket: 'cars-app-project.appspot.com',
+    apiKey: 'AIzaSyAk5A7kE4bQGrbsXptxFFPWANg8FVih1Gg',
+    appId: '1:808437763359:android:3c22c765c71527be05b42a',
+    messagingSenderId: '808437763359',
+    projectId: 'hackathon-masters',
+    storageBucket: 'hackathon-masters.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDFYDONntE52tKuTfB9NlDjCxcD--nvIg8',
-    appId: '1:287016054500:ios:0ba4bb806f42c21e24c6f1',
-    messagingSenderId: '287016054500',
-    projectId: 'cars-app-project',
-    storageBucket: 'cars-app-project.appspot.com',
+    apiKey: 'AIzaSyDXsGK159ireP6Yr5p6TnbU76pVo0PCx8g',
+    appId: '1:808437763359:ios:627cde2520a590e405b42a',
+    messagingSenderId: '808437763359',
+    projectId: 'hackathon-masters',
+    storageBucket: 'hackathon-masters.appspot.com',
     iosBundleId: 'com.example.cars',
   );
+
 }
