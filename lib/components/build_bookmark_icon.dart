@@ -77,7 +77,6 @@ class _BookmarkIconButtonState extends State<BookmarkIconButton> {
       icon: _isBookmarked
           ? const Icon(Icons.bookmark_added)
           : const Icon(Icons.bookmark_add_outlined),
-      color: Colors.grey[500],
       iconSize: 30,
       onPressed: _toggleBookmark,
     );

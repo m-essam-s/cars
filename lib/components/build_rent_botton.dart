@@ -3,21 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// RentingConfirmationButton
 class RentingConfirmationButton extends StatefulWidget {
   final String carId;
-  // final String name;
-  // final String oneDayRent;
-  // final String imageURL;
-  // final String status;
 
   const RentingConfirmationButton({
     super.key,
     required this.carId,
-    // required this.name,
-    // required this.oneDayRent,
-    // required this.imageURL,
-    // required this.status,
   });
 
   @override
@@ -32,11 +23,11 @@ class _RentingConfirmationButtonState extends State<RentingConfirmationButton> {
   void initState() {
     super.initState();
     // Load the favorite status from Firestore when the widget is created
-    _loadFavoriteStatus();
+    _loadRentStatus();
   }
 
   // Load the favorite status from Firestore
-  void _loadFavoriteStatus() async {
+  void _loadRentStatus() async {
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -72,10 +63,6 @@ class _RentingConfirmationButtonState extends State<RentingConfirmationButton> {
         // Add to favorites
         await favoriteRef.set({
           'carId': widget.carId,
-          // 'name': widget.name,
-          // 'oneDayRent': widget.oneDayRent,
-          // 'imageURL': widget.imageURL,
-          // 'status': widget.status
         });
       }
 

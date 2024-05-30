@@ -22,17 +22,15 @@ class BuildTextField extends StatelessWidget {
         obscureText: obscureText,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderSide: const BorderSide(),
             borderRadius: BorderRadius.circular(15), // Apply border radius here
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade100),
+            borderSide: const BorderSide(),
             borderRadius: BorderRadius.circular(15), // Maintain same radius
           ),
-          fillColor: Colors.grey.shade300,
           filled: true,
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey[500]),
         ),
       ),
     );

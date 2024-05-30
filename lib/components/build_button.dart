@@ -11,17 +11,19 @@ class BuildButton extends StatelessWidget {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.all(15),
           margin: const EdgeInsets.symmetric(horizontal: 25),
           decoration: BoxDecoration(
-            color: Colors.grey.shade200,
             borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: Colors.grey.shade300,
+              width: 1,
+            ),
           ),
           child: Center(
             child: Text(
               text,
-              style: TextStyle(
-                color: Colors.grey[700],
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
