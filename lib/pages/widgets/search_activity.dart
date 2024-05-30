@@ -1,10 +1,7 @@
 import 'package:cars/components/renting_page_activity.dart';
-import 'package:cars/components/build_bookmark_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:cars/themes/theme_notifier.dart';
-import 'package:provider/provider.dart';
 import 'package:cars/data/firestore_streams.dart';
 
 class SearchActivity extends StatefulWidget {
@@ -35,9 +32,6 @@ class _SearchActivityState extends State<SearchActivity> {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
-    final isDarkMode = themeNotifier.isDarkMode;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
