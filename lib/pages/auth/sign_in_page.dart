@@ -15,8 +15,8 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
+  bool isLoading = false;
 
   void resetPass() {
     Navigator.push(
@@ -32,14 +32,6 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void signIn() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-
     // try sign in
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -53,51 +45,28 @@ class _SignInPageState extends State<SignInPage> {
       // pop the loading circle
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
-      // WRONG EMAIL
-      if (e.code == 'user-not-found') {
-        // show error to user
-        wrongEmailMessage();
-      }
-
-      // WRONG PASSWORD
-      else if (e.code == 'wrong-password') {
-        // show error to user
-        wrongPasswordMessage();
-      }
+      // show error message to user
+      showErrorDialog(e.message ?? 'An error occurred');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  // wrong email message popup
-  void wrongEmailMessage() {
+  void showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
-          backgroundColor: Colors.deepPurple,
-          title: Center(
-            child: Text(
-              'Incorrect Email',
-              style: TextStyle(color: Colors.white),
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  // wrong password message popup
-  void wrongPasswordMessage() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          backgroundColor: Color.fromARGB(255, 36, 36, 36),
-          title: Center(
-            child: Text(
-              'Incorrect Password',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+          ],
         );
       },
     );
@@ -106,27 +75,28 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: Center(
         child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: [
-            const SizedBox(height: 300),
+            const SizedBox(height: 100),
 
             // logo
             const Icon(
               Icons.android_rounded,
-              size: 200,
+              size: 100,
             ),
+
+            const SizedBox(height: 40),
 
             // welcome back, you've been missed!
             const Center(
               child: Text(
                 'HELLO AGAIN',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 29, 29, 29),
-                  fontSize: 52,
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
                 ),
               ),
             ),
@@ -136,7 +106,7 @@ class _SignInPageState extends State<SignInPage> {
                 'Welcome back you\'ve been missed!',
                 style: TextStyle(
                   color: Colors.grey[700],
-                  fontSize: 20,
+                  fontSize: 18,
                 ),
               ),
             ),
@@ -187,7 +157,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             // sign in button
             BuildButton(
@@ -202,12 +172,10 @@ class _SignInPageState extends State<SignInPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Not a member ?',
+                  'Not a member?',
                   style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
-                const SizedBox(
-                  width: 4,
-                ),
+                const SizedBox(width: 4),
                 GestureDetector(
                   onTap: widget.onTap,
                   child: const Text(
@@ -218,9 +186,9 @@ class _SignInPageState extends State<SignInPage> {
                       fontSize: 16,
                     ),
                   ),
-                )
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

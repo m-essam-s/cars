@@ -22,14 +22,23 @@ class _SignInOrUpState extends State<SignInOrUp> {
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage) {
-      return SignInPage(
-        onTap: togglePages,
-      );
-    } else {
-      return SignUpPage(
-        onTap: togglePages,
-      );
-    }
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      child: showLoginPage
+          ? SignInPage(
+              key: const ValueKey('SignInPage'),
+              onTap: togglePages,
+            )
+          : SignUpPage(
+              key: const ValueKey('SignUpPage'),
+              onTap: togglePages,
+            ),
+    );
   }
 }

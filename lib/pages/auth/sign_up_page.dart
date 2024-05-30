@@ -20,6 +20,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  bool isLoading = false;
+
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   Future<void> createUserDocument(User user) async {
@@ -30,6 +32,35 @@ class _SignUpPageState extends State<SignUpPage> {
       // Default photoUrl
       "photoUrl":
           "https://firebasestorage.googleapis.com/v0/b/hackathon-masters.appspot.com/o/Users%2FGhost.png?alt=media&token=3d91e850-feff-40ae-a3aa-0bee873a6446",
+      // "role": "user",
+      // "createdAt": DateTime.now().millisecondsSinceEpoch,
+      // "updatedAt": DateTime.now().millisecondsSinceEpoch,
+      // "isVerified": false,
+      // "isBlocked": false,
+      // "isDeleted": false,
+      // "phoneNumber": "",
+      // "address": "",
+      // "city": "",
+      // "state": "",
+      // "country": "",
+      // "zipCode": "",
+      // "bio": "",
+      // "rating": 0,
+      // "totalRatings": 0,
+      // "products": [],
+      // "orders": [],
+      // "cart": [],
+      // "wishlist": [],
+      // "notifications": [],
+      // "reviews": [],
+      // "chats": [],
+      // "blockedUsers": [],
+      // "reportedUsers": [],
+      // "reportedProducts": [],
+      // "reportedReviews": [],
+      // "reportedMessages": [],
+      // "reportedOrders": [],
+      // "reportedChats": [],
     });
   }
 
@@ -39,17 +70,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // Sign User Up method
   void signUserUp() async {
-    // Show loading circle
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-
     // Try Creating the user
     try {
       // Check if password is confirmed
@@ -73,30 +93,35 @@ class _SignUpPageState extends State<SignUpPage> {
         if (mounted) {
           Navigator.pop(context);
         }
-        showErrormessage('Passwords don\'t match!');
+        showErrorDialog('Passwords don\'t match!');
       }
     } on FirebaseAuthException catch (e) {
       // Ensure the dialog is dismissed
       if (mounted) {
         Navigator.pop(context);
       }
-      showErrormessage(e.message ?? 'An error occurred');
+      showErrorDialog(e.message ?? 'An error occurred');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   // Error message to user
-  void showErrormessage(String message) {
+  void showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color.fromARGB(255, 29, 29, 29),
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
+          title: const Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
             ),
-          ),
+          ],
         );
       },
     );
@@ -105,10 +130,10 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: Center(
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          shrinkWrap: true,
           children: [
             const SizedBox(height: 100),
 
@@ -117,20 +142,17 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Text(
                 'HELLO THERE',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 29, 29, 29),
-                  fontSize: 52,
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
                 ),
               ),
             ),
 
-            Center(
+            const Center(
               child: Text(
                 'Let\'s create an account for you!',
                 style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 20,
+                  fontSize: 18,
                 ),
               ),
             ),
@@ -195,7 +217,7 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Already Have an account ?',
+                  'Already have an account?',
                   style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
                 const SizedBox(width: 4),
