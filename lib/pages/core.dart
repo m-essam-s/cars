@@ -1,12 +1,9 @@
-import 'package:cars/themes/theme_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:cars/pages/widgets/home_activity.dart';
 import 'package:cars/pages/widgets/profile_activity.dart';
 import 'package:cars/pages/widgets/search_activity.dart';
 import 'package:cars/pages/widgets/bookmarks_activity.dart';
-import 'package:cars/themes/theme.dart';
-import 'package:provider/provider.dart';
 
 class Core extends StatefulWidget {
   const Core({super.key});
@@ -26,8 +23,6 @@ class _CoreState extends State<Core> {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
-    final isDarkMode = themeNotifier.isDarkMode;
     return Scaffold(
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
