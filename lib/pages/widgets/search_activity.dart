@@ -1,10 +1,11 @@
-import 'package:cars/Pages/widgets/renting_page_activity.dart';
+import 'package:cars/components/renting_page_activity.dart';
 import 'package:cars/components/build_bookmark_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:cars/themes/theme_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:cars/data/firestore_streams.dart';
 
 class SearchActivity extends StatefulWidget {
   const SearchActivity({Key? key}) : super(key: key);
@@ -22,41 +23,6 @@ class _SearchActivityState extends State<SearchActivity> {
     super.initState();
     streams = mergeFirestoreCollections();
     _searchController = TextEditingController();
-  }
-
-  List<Stream<QuerySnapshot>> mergeFirestoreCollections() {
-    var stream1 = FirebaseFirestore.instance
-        .collection('cars')
-        .doc('BMW')
-        .collection('m-series')
-        .snapshots();
-    var stream2 = FirebaseFirestore.instance
-        .collection('cars')
-        .doc('BMW')
-        .collection('x-series')
-        .snapshots();
-    var stream3 = FirebaseFirestore.instance
-        .collection('cars')
-        .doc('BMW')
-        .collection('i-series')
-        .snapshots();
-    var stream4 = FirebaseFirestore.instance
-        .collection('cars')
-        .doc('Ferrari')
-        .collection('IconaSeries')
-        .snapshots();
-    var stream5 = FirebaseFirestore.instance
-        .collection('cars')
-        .doc('Ferrari')
-        .collection('RangeSeries')
-        .snapshots();
-    var stream6 = FirebaseFirestore.instance
-        .collection('cars')
-        .doc('Ferrari')
-        .collection('SpecialSeries')
-        .snapshots();
-
-    return [stream1, stream2, stream3, stream4, stream5, stream6];
   }
 
   List<DocumentSnapshot> filterCars(
@@ -80,15 +46,14 @@ class _SearchActivityState extends State<SearchActivity> {
             bottom: Radius.circular(25),
           ),
         ),
-        backgroundColor: isDarkMode ? Colors.grey[900] : Colors.grey.shade100,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
-          'Find your Car',
+          'Search Cars',
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.w400,
-            color: isDarkMode ? Colors.grey[400] : Colors.grey[500]!,
+            color: Theme.of(context).textTheme.titleLarge!.color,
             fontFamily: 'Roboto',
-            letterSpacing: 3,
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -104,21 +69,16 @@ class _SearchActivityState extends State<SearchActivity> {
               },
               decoration: InputDecoration(
                 hintText: 'Search for a car...',
-                hintStyle: TextStyle(color: Colors.grey[500]),
-                fillColor: Colors.grey.shade100,
                 filled: true,
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade100),
                   borderRadius:
                       BorderRadius.circular(15), // Apply border radius here
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade400),
                   borderRadius:
                       BorderRadius.circular(15), // Maintain same radius
                 ),
-                prefixIcon:
-                    Icon(Icons.search, color: Colors.grey[500], size: 25),
+                prefixIcon: const Icon(Icons.search, size: 25),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -132,7 +92,6 @@ class _SearchActivityState extends State<SearchActivity> {
               child: Container(
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: isDarkMode ? Colors.grey[850] : Colors.grey[200],
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: StreamBuilder<List<QuerySnapshot>>(
@@ -188,77 +147,34 @@ class _SearchActivityState extends State<SearchActivity> {
                             );
                           },
                           child: Card(
-                            color: isDarkMode
-                                ? Colors.grey[800]
-                                : Colors.grey[100],
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: isDarkMode
-                                    ? Colors.grey[800]
-                                    : Colors.grey[100],
                               ),
-                              child: Stack(
+                              child: Column(
                                 children: [
-                                  Column(
-                                    children: [
-                                      Image.network(imageURL),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 12, left: 12),
-                                        child: Text(
-                                          name,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            color: isDarkMode
-                                                ? Colors.white
-                                                : Colors.grey[700]!,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
+                                  Image.network(imageURL),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 5, left: 5),
+                                    child: Text(
+                                      name,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Roboto',
                                       ),
-                                    ],
-                                  ),
-                                  Positioned(
-                                    bottom: 6,
-                                    left: 0,
-                                    right: 0,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "$oneDayRent Dollars /Day",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w200,
-                                            color: isDarkMode
-                                                ? Colors.grey[300]
-                                                : Colors.grey[700]!,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                        Text(
-                                          status,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w200,
-                                            color: isDarkMode
-                                                ? Colors.grey[300]
-                                                : Colors.grey[700]!,
-                                            fontFamily: 'Roboto',
-                                            fontStyle: FontStyle.italic,
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 0,
-                                    child: BookmarkIconButton(
-                                      carId: carId,
+                                  Text(
+                                    status,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200,
+                                      fontFamily: 'Roboto',
+                                      fontStyle: FontStyle.italic,
                                     ),
                                   ),
                                 ],

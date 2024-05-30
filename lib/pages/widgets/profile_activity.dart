@@ -1,92 +1,84 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import provider
-import 'package:cars/components/build_card.dart';
-import 'package:cars/pages/widgets/about_us_activity.dart';
-import 'package:cars/pages/widgets/history_activity.dart';
-import 'package:cars/pages/auth/reset_pass_page.dart';
-import 'package:cars/pages/auth/auth_page.dart';
-import 'package:cars/pages/widgets/edit_profile_activity.dart';
-import 'package:cars/themes/theme_notifier.dart'; // Import ThemeNotifier
+import 'package:provider/provider.dart';
+import 'package:cars/themes/theme_notifier.dart';
+import 'package:cars/pages/widgets/secondary_widgets/about_us_activity.dart';
+import 'package:cars/pages/widgets/secondary_widgets/history_activity.dart';
+import 'package:cars/pages/widgets/secondary_widgets/account_activity.dart';
 
 class ProfileActivity extends StatefulWidget {
-  ProfileActivity({Key? key}) : super(key: key);
+  const ProfileActivity({super.key});
 
   @override
   State<ProfileActivity> createState() => _ProfileActivityState();
 }
 
 class _ProfileActivityState extends State<ProfileActivity> {
-  Future<void> _confirmSignOut(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          title: const Text('Are you sure you want to sign out?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: Text('Cancel', style: TextStyle(color: Colors.grey[700])),
-            ),
-            TextButton(
-              onPressed: () async {
-                try {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.pop(context);
-                } catch (e) {
-                  // Handle errors gracefully, e.g., show an error message
-                }
-              },
-              child:
-                  const Text('Sign Out', style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
+  User? user;
+  Map<String, dynamic>? userData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      fetchUserData();
+    }
   }
 
-  Future<void> _confirmAccountDeletion(BuildContext context) async {
-    final User? currentUser = FirebaseAuth.instance.currentUser;
+  Future<void> fetchUserData() async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
+      setState(() {
+        userData = userDoc.data() as Map<String, dynamic>;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching user data: $e')),
+      );
+    }
+  }
 
-    return showDialog<void>(
+  void showThemeDialog(BuildContext context, ThemeNotifier themeNotifier) {
+    showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          title: const Text('Are you sure you want to delete your account?'),
-          content: const Text(
-            'This action cannot be undone. All your data will be permanently deleted.',
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: Text('Cancel', style: TextStyle(color: Colors.grey[700])),
-            ),
-            TextButton(
-              onPressed: () async {
-                try {
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(currentUser?.uid)
-                      .delete();
-                  await FirebaseAuth.instance.currentUser!.delete();
-                  await FirebaseAuth.instance.signOut();
+          title: const Text('Select Theme'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: const Text('Dark'),
+                onTap: () {
+                  themeNotifier.toggleTheme();
                   Navigator.pop(context);
-                  Navigator.pushReplacementNamed(context, '/home');
-                } catch (error) {
-                  print('Error deleting account: $error');
-                  // Handle error gracefully, e.g., show a snackbar
-                }
-              },
-              child: const Text('Delete Account',
-                  style: TextStyle(color: Colors.red)),
-            ),
-          ],
+                },
+              ),
+              ListTile(
+                title: const Text('Light'),
+                onTap: () {
+                  themeNotifier.toggleTheme();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('System Settings'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -133,89 +125,95 @@ class _ProfileActivityState extends State<ProfileActivity> {
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(15.0),
             ),
-            child: ListView(
-              children: [
-                const SizedBox(height: 100),
-                _buildCurrentUserData(),
-                const SizedBox(height: 25),
-                BuildCard(
-                  text: 'History',
-                  icon: Icons.history,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const HistoryActivity();
-                        },
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView(
+                    children: [
+                      VerticalDivider(
+                        color: Theme.of(context).colorScheme.secondary,
+                        thickness: 2,
+                        indent: 10,
+                        endIndent: 10,
                       ),
-                    );
-                  },
-                ),
-                BuildCard(
-                  text: 'About Us',
-                  icon: Icons.info_outline,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const AboutUsActivity();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                BuildCard(
-                  text: 'Edit Profile',
-                  icon: Icons.edit,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return EditProfileActivity(
-                            onTap: () {},
+                      _buildCurrentUserData(),
+                      const SizedBox(height: 20),
+                      ListTile(
+                        title: const Text('Account'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const AccountActivity();
+                              },
+                            ),
                           );
                         },
                       ),
-                    );
-                  },
-                ),
-                BuildCard(
-                  text: 'Reset Password',
-                  icon: Icons.lock_reset_outlined,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ResetPassword(
-                            onTap: () {},
+                      ListTile(
+                        title: const Text('Notifications'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('History'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const HistoryActivity();
+                              },
+                            ),
                           );
                         },
                       ),
-                    );
-                  },
-                ),
-                BuildCard(
-                  text: 'Sign Out',
-                  icon: Icons.logout,
-                  onTap: () {
-                    _confirmSignOut(context);
-                  },
-                ),
-                BuildCard(
-                  text: 'Delete Account',
-                  icon: Icons.delete_forever_outlined,
-                  onTap: () {
-                    _confirmAccountDeletion(context);
-                  },
-                ),
-              ],
-            ),
+                      ListTile(
+                        title: const Text('Theme'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          showThemeDialog(context, themeNotifier);
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Language'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('About Us'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const AboutUsActivity();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Terms & Conditions'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('Privacy Policy'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: const Text('Contact Us'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
           ),
         ),
       ),
@@ -251,31 +249,35 @@ class _ProfileActivityState extends State<ProfileActivity> {
 
           if (userData != null) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
                 children: [
                   CircleAvatar(
                     backgroundColor: Theme.of(context).colorScheme.background,
-                    radius: 70,
+                    radius: 40,
                     backgroundImage: NetworkImage('${userData['photoUrl']}'),
                   ),
-                  Text(
-                    '${userData['firstName']} ${userData['lastName']}',
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyLarge!.color,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'Roboto',
-                    ),
-                  ),
-                  Text(
-                    '${userData['email']}',
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w200,
-                      fontFamily: 'Roboto',
-                    ),
+                  const SizedBox(width: 25),
+                  Column(
+                    children: [
+                      Text(
+                        '${userData['firstName']} ${userData['lastName']}',
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      Text(
+                        '${userData['email']}',
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w200,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
