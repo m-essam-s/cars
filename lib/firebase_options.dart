@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -49,21 +40,49 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyA8W5Hb-9KAcZ6mL7zOISDkGMCHdJtNOTQ',
+    appId: '1:287016054500:web:5677eb974534822324c6f1',
+    messagingSenderId: '287016054500',
+    projectId: 'cars-app-project',
+    authDomain: 'cars-app-project.firebaseapp.com',
+    storageBucket: 'cars-app-project.appspot.com',
+    measurementId: 'G-3KY72BQR6L',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAk5A7kE4bQGrbsXptxFFPWANg8FVih1Gg',
-    appId: '1:808437763359:android:3c22c765c71527be05b42a',
-    messagingSenderId: '808437763359',
-    projectId: 'hackathon-masters',
-    storageBucket: 'hackathon-masters.appspot.com',
+    apiKey: 'AIzaSyAonF97JqWm9NDs9BLOC0SUQJdgkKuFfJk',
+    appId: '1:287016054500:android:0c55dd8133764e0424c6f1',
+    messagingSenderId: '287016054500',
+    projectId: 'cars-app-project',
+    storageBucket: 'cars-app-project.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDXsGK159ireP6Yr5p6TnbU76pVo0PCx8g',
-    appId: '1:808437763359:ios:627cde2520a590e405b42a',
-    messagingSenderId: '808437763359',
-    projectId: 'hackathon-masters',
-    storageBucket: 'hackathon-masters.appspot.com',
+    apiKey: 'AIzaSyDFYDONntE52tKuTfB9NlDjCxcD--nvIg8',
+    appId: '1:287016054500:ios:0ba4bb806f42c21e24c6f1',
+    messagingSenderId: '287016054500',
+    projectId: 'cars-app-project',
+    storageBucket: 'cars-app-project.appspot.com',
     iosBundleId: 'com.example.cars',
   );
 
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDFYDONntE52tKuTfB9NlDjCxcD--nvIg8',
+    appId: '1:287016054500:ios:0ba4bb806f42c21e24c6f1',
+    messagingSenderId: '287016054500',
+    projectId: 'cars-app-project',
+    storageBucket: 'cars-app-project.appspot.com',
+    iosBundleId: 'com.example.cars',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyA8W5Hb-9KAcZ6mL7zOISDkGMCHdJtNOTQ',
+    appId: '1:287016054500:web:1be452353643f85b24c6f1',
+    messagingSenderId: '287016054500',
+    projectId: 'cars-app-project',
+    authDomain: 'cars-app-project.firebaseapp.com',
+    storageBucket: 'cars-app-project.appspot.com',
+    measurementId: 'G-4WTS8SJ220',
+  );
 }
