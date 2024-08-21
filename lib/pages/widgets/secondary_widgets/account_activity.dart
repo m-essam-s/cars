@@ -109,7 +109,7 @@ class AccountActivity extends StatelessWidget {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: const Text('Are you sure you want to delete your account?'),
           content: const Text(
             'This action cannot be undone. All your data will be permanently deleted.',

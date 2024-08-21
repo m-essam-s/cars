@@ -252,7 +252,7 @@ class _ProfileActivityState extends State<ProfileActivity> {
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.background,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                     radius: 40,
                     backgroundImage: NetworkImage('${userData['photoUrl']}'),
                   ),
