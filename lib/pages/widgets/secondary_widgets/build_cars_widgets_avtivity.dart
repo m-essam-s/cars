@@ -2,7 +2,6 @@ import 'package:cars/components/renting_page_activity.dart';
 import 'package:cars/components/build_bookmark_icon.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class SeriesActivity extends StatefulWidget {
   final String title;
