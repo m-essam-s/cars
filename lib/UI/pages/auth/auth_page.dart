@@ -1,6 +1,5 @@
-import 'package:cars/UI/pages/auth/login_screen.dart';
 import 'package:flutter/material.dart';
-// import 'package:cars/Pages/auth/sign_in_or_up.dart';
+import 'package:cars/Pages/auth/sign_in_or_up.dart';
 import 'package:cars/Pages/core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -29,7 +28,7 @@ class AuthPage extends StatelessWidget {
           }
 
           // User is NOT logged in
-          return const LoginScreen();
+          return const SignInOrUp();
         },
       ),
     );
